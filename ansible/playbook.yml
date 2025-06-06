@@ -1,0 +1,59 @@
+- name: Installing elsticsearch
+  hosts: tag_Role_elastic
+  become: true
+  roles:
+    - elasticSearch
+
+- name: Installing kibana
+  hosts: tag_Role_kibana
+  become: true
+  roles:
+    - kibana
+
+# - name: Generate token
+#   hosts: tag_Name_elastic_header_0
+#   become: true
+#   tasks:
+#     - name: Generate node enroll token
+#       command:
+#         cmd: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
+#       register: node_enroll_token
+#
+#     - name: Generate kibana enroll token
+#       command:
+#         cmd: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+#       register: kibana_enroll_token
+#
+#     - name: Set facts for enrollment tokens
+#       set_fact:
+#         shared_node_enroll_token: "{{ node_enroll_token.stdout }}"
+#         shared_kibana_enroll_token: "{{ kibana_enroll_token.stdout }}"
+#
+#     - name: Save enrollment tokens to a host variable (for later play access)
+#       add_host:
+#         name: "token_holder"
+#         shared_node_enroll_token: "{{ shared_node_enroll_token }}"
+#         shared_kibana_enroll_token: "{{ shared_kibana_enroll_token }}"
+#
+# - name: Enroll other Elasticsearch nodes
+#   hosts: tag_Name_elastic_node
+#   become: true
+#   tasks:
+#     - name: Enroll node with token
+#       command: >
+#         /usr/share/elasticsearch/bin/elasticsearch-reconfigure-node
+#         --enrollment-token {{ hostvars['token_holder']['shared_node_enroll_token'] }}
+#
+#
+# - name: Enroll Kibana
+#   hosts: tag_Role_kibana
+#   become: true
+#   tasks:
+#     - name: Enroll Kibana with token
+#       command: >
+#         /usr/share/kibana/bin/kibana-setup
+#         --enrollment-token {{ hostvars['token_holder']['shared_kibana_enroll_token'] }}
+#
+#     - name: Check kibana status
+#       command: >
+#         systemctl status kibana.service

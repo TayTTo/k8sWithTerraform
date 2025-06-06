@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for generate-token
+- name: Generate node enroll token
+  command:
+    cmd: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node
+  register: node_enroll_token
+
+- name: Generate kibana enroll token
+  command:
+    cmd: /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+  register: kibana_enroll_token

@@ -1,9 +1,10 @@
 plugin: amazon.aws.aws_ec2
+cache: False
 regions:
   - ap-southeast-1
 keyed_groups:
-  - key: Name
-    prefix: tag
-  - key: tags
-    prefix: tag
+  -  prefix: tag
+     key: tags
+  # - key: tags
+  #   prefix: tag
 

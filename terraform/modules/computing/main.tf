@@ -11,7 +11,8 @@ resource "aws_launch_template" "kibana_asg_template" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "kibana"
+      Name = "kibana_node"
+      Role = "kibana"
     }
   }
 }
@@ -24,7 +25,8 @@ resource "aws_launch_template" "elastic_asg_template" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "elastic"
+      Name = "elastic_node"
+      Role = "elastic"
     }
   }
   vpc_security_group_ids = var.elastic_security_group_ids
@@ -48,4 +50,21 @@ resource "aws_autoscaling_group" "elastic_asg" {
     id = aws_launch_template.elastic_asg_template.id
   }
   vpc_zone_identifier = var.elastic_subnets
+}
+
+locals {
+  elastic_header_subnet_map = { for idx, value in var.elastic_subnets : idx => value}
+}
+
+resource "aws_instance" "elastic_header_node" {
+  for_each = local.elastic_header_subnet_map
+  instance_type = var.elastic_instance_type
+  ami = var.ami_id
+  key_name = var.elk_key
+  subnet_id = each.value
+  vpc_security_group_ids = var.elastic_security_group_ids
+  tags = {
+    Name = "elastic_header_${each.key}"
+    Role = "elastic"
+  }
 }
