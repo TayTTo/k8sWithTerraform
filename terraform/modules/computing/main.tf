@@ -1,11 +1,11 @@
-resource "aws_launch_template" "kibana_asg_template" {
-  name = "kibana-asg"
+resource "aws_launch_template" "baston_host" {
+  name = "baston-asg"
   image_id = var.ami_id
-  key_name = var.elk_key
+  key_name = var.baston_key
   network_interfaces {
     device_index = 0
     associate_public_ip_address = true
-    security_groups = var.kibana_security_group_ids
+    security_groups = var.baston_security_group_ids
   }
   instance_type = var.kibana_instance_type
   tag_specifications {
@@ -19,7 +19,7 @@ resource "aws_launch_template" "kibana_asg_template" {
 
 resource "aws_launch_template" "elastic_asg_template" {
   name = "elastic-auto-scaling-group"
-  key_name = var.elk_key
+  key_name = var.baston_key
   image_id = var.ami_id
   instance_type = var.elastic_instance_type
   tag_specifications {

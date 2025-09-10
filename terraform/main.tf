@@ -34,9 +34,9 @@ resource "aws_key_pair" "elk_keypair" {
 module "computing" {
   source = "./modules/computing/"
   ami_id = var.ami_id
-  elk_key = aws_key_pair.elk_keypair.key_name
+  baston_key = aws_key_pair.elk_keypair.key_name
   kibana_instance_type = var.kibana_instance_type
-  kibana_security_group_ids = [module.security.public_security_group_id]
+  baston_security_group_ids = [module.security.public_security_group_id]
   elastic_instance_type = var.elastic_instance_type
   elastic_security_group_ids = [module.security.private_security_group_id]
   kibana_subnets = module.network.public_subnets_ips

@@ -13,7 +13,7 @@ variable "elastic_instance_type" {
   nullable = false
 }
 
-variable "kibana_security_group_ids" {
+variable "baston_security_group_ids" {
   type = list(string)
   nullable = false
 }
@@ -23,7 +23,7 @@ variable "elastic_security_group_ids" {
   nullable = false
 }
 
-variable "elk_key" {
+variable "baston_key" {
   type = string
   nullable = false
 }
