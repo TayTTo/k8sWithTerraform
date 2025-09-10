@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -23,22 +23,23 @@ module "network" {
 
 module "security" {
   source = "./modules/security/"
-  elk_vpc_id = module.network.elk_vpc_id
+  k8s_vpc_id = module.network.k8s_vpc_id
 }
 
-resource "aws_key_pair" "elk_keypair" {
-  key_name = "elk-keypair"
+resource "aws_key_pair" "k8s_keypair" {
+  key_name = "k8s-keypair"
   public_key = file(var.key_path)
 }
 
 module "computing" {
   source = "./modules/computing/"
   ami_id = var.ami_id
-  baston_key = aws_key_pair.elk_keypair.key_name
-  kibana_instance_type = var.kibana_instance_type
+  k8s_key = aws_key_pair.k8s_keypair.key_name
+  baston_instance_type = var.baston_instance_type
   baston_security_group_ids = [module.security.public_security_group_id]
-  elastic_instance_type = var.elastic_instance_type
-  elastic_security_group_ids = [module.security.private_security_group_id]
-  kibana_subnets = module.network.public_subnets_ips
-  elastic_subnets = module.network.private_subnets_ips
+  k8s_controller_type = var.k8s_controller_type
+  k8s_worker_type = var.k8s_worker_type
+  k8s_security_group_ids = [module.security.private_security_group_id]
+  baston_subnets = module.network.public_subnets_ips
+  k8s_subnets = module.network.private_subnets_ips
 }

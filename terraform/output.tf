@@ -1,7 +1,11 @@
-output "kibana_tag" {
-  value = module.computing.kibana_tag
+output "baston_tag" {
+  value = module.computing.baston_tag
 }
 
-output "elastic-tag" {
-  value = module.computing.elastic_tag
+output "controller-tag" {
+  value = module.computing.controller_tag
+}
+
+output "worker-tag" {
+  value = module.computing.worker_tag
 }

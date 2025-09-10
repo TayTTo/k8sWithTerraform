@@ -1,4 +1,4 @@
-output "elk_vpc_id" {
+output "k8s_vpc_id" {
   value = module.vpc.vpc_id
 }
 

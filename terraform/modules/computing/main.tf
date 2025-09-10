@@ -1,70 +1,78 @@
 resource "aws_launch_template" "baston_host" {
   name = "baston-asg"
   image_id = var.ami_id
-  key_name = var.baston_key
+  key_name = var.k8s_key
   network_interfaces {
     device_index = 0
     associate_public_ip_address = true
     security_groups = var.baston_security_group_ids
   }
-  instance_type = var.kibana_instance_type
+  instance_type = var.baston_instance_type
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "kibana_node"
-      Role = "kibana"
+      Name = "baston_node"
+      Role = "baston"
     }
   }
 }
 
-resource "aws_launch_template" "elastic_asg_template" {
-  name = "elastic-auto-scaling-group"
-  key_name = var.baston_key
+resource "aws_launch_template" "k8s_controller_asg_template" {
+  name = "k8s-controller-auto-scaling-group"
+  key_name = var.k8s_key
   image_id = var.ami_id
-  instance_type = var.elastic_instance_type
+  instance_type = var.k8s_controller_type
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "elastic_node"
-      Role = "elastic"
+      Name = "k8s_controller_node"
+      Role = "k8s_controller"
     }
   }
-  vpc_security_group_ids = var.elastic_security_group_ids
+  vpc_security_group_ids = var.k8s_security_group_ids
 }
 
-resource "aws_autoscaling_group" "kibana_asg" {
+resource "aws_launch_template" "k8s_worker_asg_template" {
+  name = "k8s-worker-auto-scaling-group"
+  key_name = var.k8s_key
+  image_id = var.ami_id
+  instance_type = var.k8s_worker_type
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "k8s_worker_node"
+      Role = "k8s_worker"
+    }
+  }
+  vpc_security_group_ids = var.k8s_security_group_ids
+}
+
+resource "aws_autoscaling_group" "baston_asg" {
   min_size = 1
   max_size = 2
   desired_capacity = 1
   launch_template {
-    id = aws_launch_template.kibana_asg_template.id
+    id = aws_launch_template.baston_host.id
   }
-  vpc_zone_identifier = var.kibana_subnets
+  vpc_zone_identifier = var.baston_subnets
 }
 
-resource "aws_autoscaling_group" "elastic_asg" {
+resource "aws_autoscaling_group" "k8s_controller_asg" {
   min_size = 1
   max_size = 2
   desired_capacity = 1
   launch_template {
-    id = aws_launch_template.elastic_asg_template.id
+    id = aws_launch_template.k8s_controller_asg_template.id
   }
-  vpc_zone_identifier = var.elastic_subnets
+  vpc_zone_identifier = var.k8s_subnets
 }
 
-locals {
-  elastic_header_subnet_map = { for idx, value in var.elastic_subnets : idx => value}
-}
-
-resource "aws_instance" "elastic_header_node" {
-  for_each = local.elastic_header_subnet_map
-  instance_type = var.elastic_instance_type
-  ami = var.ami_id
-  key_name = var.elk_key
-  subnet_id = each.value
-  vpc_security_group_ids = var.elastic_security_group_ids
-  tags = {
-    Name = "elastic_header_${each.key}"
-    Role = "elastic"
+resource "aws_autoscaling_group" "k8s_worker_asg" {
+  min_size = 1
+  max_size = 2
+  desired_capacity = 1
+  launch_template {
+    id = aws_launch_template.k8s_worker_asg_template.id
   }
+  vpc_zone_identifier = var.k8s_subnets
 }

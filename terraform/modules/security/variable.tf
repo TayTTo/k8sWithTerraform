@@ -1,3 +1,3 @@
-variable "elk_vpc_id" {
+variable "k8s_vpc_id" {
   type = string
 }

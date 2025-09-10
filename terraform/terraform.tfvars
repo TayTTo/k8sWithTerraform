@@ -1,8 +1,9 @@
 key_path = "./public_key/aws.pub"
 ami_id = "ami-01938df366ac2d954"
 region = "ap-southeast-1"
-kibana_instance_type = "t2.small"
-elastic_instance_type = "t2.small"
+baston_instance_type = "t2.small"
+k8s_controller_type = "t2.small"
+k8s_worker_type = "t2.small"
 vpc_name = "k8s-vpc"
 azs = [ "ap-southeast-1a"]
 cidr = "10.0.0.0/16"
