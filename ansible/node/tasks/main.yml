@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for controller
+- name: Instaling ncessary packages
+  apt:
+    name:
+      - containerd.io
+      - containernetworking-plugins
+      - apt-transport-https
+      - ca-certificates 
+      - curl 
+      - gpg
+    state: present
+    update_cache: yes
+
+- name: Download public signing key
+  get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key
+  
+- name: Ensure /etc/apt/keyrings exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Kubernetes GPG key
+  get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key
+    dest: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    mode: '0644'
+
+- name: Add Kubernetes APT repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /"
+    filename: kubernetes
+    state: present
+
+- name: Install kubeadm, kubelet, kubectl
+  apt:
+    name:
+      - kubeadm
+      - kubelet
+      - kubectl
+
+- name: Enable and start kubelet
+  become: yes
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started

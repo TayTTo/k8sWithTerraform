@@ -25,6 +25,39 @@ module "private_subnets_security_group" {
     {
       rule                     = "elasticsearch-rest-tcp"
       source_security_group_id = module.public_subnets_security_group.security_group_id
+    },
+    {
+      rule                     = "etcd-client-tcp"
+      source_security_group_id = module.private_subnets_security_group.security_group_id
+    },
+    {
+      rule                     = "etcd-peer-tcp"
+      source_security_group_id = module.public_subnets_security_group.security_group_id
+    },
+    {
+      rule                     = "kubernetes-api-tcp"
+      source_security_group_id = module.public_subnets_security_group.security_group_id
+    },
+    {
+      from_port = 30000
+      to_port = 32767
+      protocol = "tcp"
+      description = "NodePort Services"
+      source_security_group_id = module.private_subnets_security_group.security_group_id
+    },
+    {
+      from_port = 30000
+      to_port = 32767
+      protocol = "udp"
+      description = "NodePort Services"
+      source_security_group_id = module.private_subnets_security_group.security_group_id
+    },
+    {
+      from_port = 10256
+      to_port = 10259
+      protocol = "tcp"
+      description = "k8s network"
+      source_security_group_id = module.private_subnets_security_group.security_group_id
     }
   ]
   ingress_with_cidr_blocks = [
