@@ -1,0 +1,67 @@
+affinity: {}
+annotations: {}
+autoscaling:
+  autoscaleBehavior: {}
+  enabled: true
+  maxReplicas: 5
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: {}
+containerSecurityContext: {}
+env: {}
+imagePullPolicy: ""
+imagePullSecrets: []
+kind: Deployment
+labels: {}
+name: ""
+networkGateway: ""
+nodeSelector: {}
+podAnnotations:
+  inject.istio.io/templates: "gateway"
+  sidecar.istio.io/inject: "true"
+podDisruptionBudget: {}
+priorityClassName: ""
+rbac:
+  enabled: true
+replicaCount: null
+resources:
+  limits:
+    cpu: 2000m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+revision: ""
+securityContext: {}
+service:
+  allocateLoadBalancerNodePorts: false
+  annotations: {}
+  externalIPs: []
+  externalTrafficPolicy: ""
+  ipFamilies: []
+  ipFamilyPolicy: ""
+  ports:
+  - name: status-port
+    port: 15021
+    protocol: TCP
+    targetPort: 15021
+  - name: http2
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  type: NodePort
+serviceAccount:
+  create: true
+  name: istio-egress
+  annotations: {}
+  create: true
+  name: ""
+terminationGracePeriodSeconds: 30
+tolerations: []
+topologySpreadConstraints: []
+volumeMounts: []
+volumes: []

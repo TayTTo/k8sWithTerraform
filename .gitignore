@@ -1,2 +1,4 @@
 .ansible
 .env
+.terraform.lock.hcl
+.terraform/
